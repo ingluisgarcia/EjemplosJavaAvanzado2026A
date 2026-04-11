@@ -79,6 +79,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         lbUser.setText("jLabel1");
 
         btnReporte.setText("Ver reporte");
+        btnReporte.addActionListener(this::btnReporteActionPerformed);
 
         jLabel1.setText("Ingrese la placa");
 
@@ -177,6 +178,13 @@ public class FrmPrincipal extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_btnGuardarActionPerformed
+
+    private void btnReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReporteActionPerformed
+        // TODO add your handling code here:
+        FrmReporte reporte = new FrmReporte(registros);
+        reporte.setVisible(true);
+        
+    }//GEN-LAST:event_btnReporteActionPerformed
 
     private void cerrarSesion(){
         FrmLogin login = new FrmLogin();
