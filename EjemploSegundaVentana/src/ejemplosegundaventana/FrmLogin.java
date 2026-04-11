@@ -4,6 +4,7 @@
  */
 package ejemplosegundaventana;
 
+import Objetos.Usuario;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 

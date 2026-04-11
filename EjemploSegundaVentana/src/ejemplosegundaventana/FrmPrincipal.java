@@ -4,6 +4,11 @@
  */
 package ejemplosegundaventana;
 
+import Objetos.RegistroPeaje;
+import Objetos.Vehiculo;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author cymaniatico
@@ -19,6 +24,12 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private String user;
     private int idProfile;
     
+    private String placa, tipoVehiculo;
+    private int valorPagado;
+    
+    private ArrayList<Vehiculo> listaTipoVehiculo;
+    private ArrayList<RegistroPeaje> registros;
+    
     public FrmPrincipal(int idUser, String user, int idProfile) {
         initComponents();
         this.idUser = idUser;
@@ -26,8 +37,15 @@ public class FrmPrincipal extends javax.swing.JFrame {
         this.idProfile = idProfile;
         lbUser.setText(this.user);
         if(this.idProfile != 1){
-            btnValidar.setEnabled(false);
+            btnReporte.setEnabled(false);
         }
+        listaTipoVehiculo = new ArrayList();
+        registros = new ArrayList();
+        listaTipoVehiculo.add(new Vehiculo("Carro", 12000));
+        listaTipoVehiculo.add(new Vehiculo("Bus", 35000));
+        listaTipoVehiculo.add(new Vehiculo("Camion", 216000));
+        txtPlaca.setText("");
+        llenarCombo();
     }
 
     /**
@@ -40,7 +58,12 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private void initComponents() {
 
         lbUser = new javax.swing.JLabel();
-        btnValidar = new javax.swing.JButton();
+        btnReporte = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        txtPlaca = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        comboVehiculos = new javax.swing.JComboBox<>();
+        btnGuardar = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         menuLogout = new javax.swing.JMenuItem();
@@ -55,7 +78,18 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         lbUser.setText("jLabel1");
 
-        btnValidar.setText("jButton1");
+        btnReporte.setText("Ver reporte");
+
+        jLabel1.setText("Ingrese la placa");
+
+        txtPlaca.setText("jTextField1");
+
+        jLabel2.setText("Seleccione el tipo de vehiculo");
+
+        comboVehiculos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        btnGuardar.setText("Guardar");
+        btnGuardar.addActionListener(this::btnGuardarActionPerformed);
 
         jMenu1.setText("File");
 
@@ -75,20 +109,45 @@ public class FrmPrincipal extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(34, 34, 34)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(comboVehiculos, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtPlaca))
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnValidar)
-                    .addComponent(lbUser))
-                .addContainerGap(291, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnGuardar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnReporte)
+                        .addGap(21, 21, 21))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(lbUser)
+                        .addGap(49, 49, 49))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(lbUser)
-                .addGap(18, 18, 18)
-                .addComponent(btnValidar)
-                .addContainerGap(198, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnReporte)
+                            .addComponent(btnGuardar))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lbUser))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(comboVehiculos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -105,11 +164,33 @@ public class FrmPrincipal extends javax.swing.JFrame {
         cerrarSesion();
     }//GEN-LAST:event_formWindowClosing
 
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+        // TODO add your handling code here:
+        if(!txtPlaca.getText().isEmpty()){
+            placa = txtPlaca.getText().toUpperCase();
+            tipoVehiculo = listaTipoVehiculo.get(comboVehiculos.getSelectedIndex()).getTipoVehiculo();
+            valorPagado = listaTipoVehiculo.get(comboVehiculos.getSelectedIndex()).getValor();
+            registros.add(new RegistroPeaje(placa, tipoVehiculo, valorPagado, user));
+            JOptionPane.showMessageDialog(rootPane, "Registro agregado");
+        } else{
+            JOptionPane.showMessageDialog(rootPane, "Ingrese la placa");
+        }
+        
+    }//GEN-LAST:event_btnGuardarActionPerformed
+
     private void cerrarSesion(){
         FrmLogin login = new FrmLogin();
         login.setVisible(true);
 
     }
+    
+    public void llenarCombo(){
+        comboVehiculos.removeAllItems();
+        for(Vehiculo v : listaTipoVehiculo){
+            comboVehiculos.addItem(v.getTipoVehiculo());
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -136,11 +217,16 @@ public class FrmPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnValidar;
+    private javax.swing.JButton btnGuardar;
+    private javax.swing.JButton btnReporte;
+    private javax.swing.JComboBox<String> comboVehiculos;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JLabel lbUser;
     private javax.swing.JMenuItem menuLogout;
+    private javax.swing.JTextField txtPlaca;
     // End of variables declaration//GEN-END:variables
 }
